@@ -13,6 +13,9 @@ public class playerMove : MonoBehaviour
     public float grav = -9.81f;
     public float jumpHeight = 3f;
 
+    public bool isSprinting;
+    public bool isCrouching;
+
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
@@ -42,6 +45,32 @@ public class playerMove : MonoBehaviour
             z = Input.GetAxis("Vertical");
         }
 
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            speed = 19f;
+            isSprinting = true;
+        }
+        
+        if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            speed = 12f;
+            isSprinting = false;
+        }
+
+        if(Input.GetKey(KeyCode.LeftControl))
+        {
+            controller.height = 1.5f;
+            isCrouching = true;
+            speed = 8f;
+        }
+        
+        if(Input.GetKeyUp(KeyCode.LeftControl))
+        {
+            controller.height = 3f;
+            isCrouching = false;
+            speed = 12f;
+        }
+
         Vector3 move = transform.right * x + transform.forward * z;
 
         controller.Move(move * speed * Time.deltaTime);
@@ -54,9 +83,9 @@ public class playerMove : MonoBehaviour
 
         velocity.y += grav * Time.deltaTime;
 
-        if(velocity.y < -9.8f)
+        if(velocity.y < -200f)
         {
-            velocity.y = -9.8f;
+            velocity.y = -200f;
         }
 
         controller.Move(velocity * Time.deltaTime);
