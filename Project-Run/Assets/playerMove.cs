@@ -54,6 +54,11 @@ public class playerMove : MonoBehaviour
 
         velocity.y += grav * Time.deltaTime;
 
+        if(velocity.y < -9.8f)
+        {
+            velocity.y = -9.8f;
+        }
+
         controller.Move(velocity * Time.deltaTime);
     }
 }
