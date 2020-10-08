@@ -4,90 +4,127 @@ using UnityEngine;
 
 public class playerMove : MonoBehaviour
 {
+    public Transform camera;
+    public Rigidbody playerBody;
+    public GameObject body;
 
-    public CharacterController controller;
+    public float camRotSpeed = 5f;
+    public float rotSmoothSpeed = 10f;
 
-    private float x;
-    private float z;
-    public float speed = 12f;
-    public float grav = -9.81f;
-    public float jumpHeight = 3f;
+    public float walkSpeed = 12f;
+    public float crouchSpeed = 7f;
+    public float runSpeed = 18f;
+    public float maxspeed = 50f;
+    public float jumpForce = 20f;
+    public float xtraGrav = 45;
 
-    public bool isSprinting;
-    public bool isCrouching;
+    float xBodyRot;
+    float camRotY;
+    Vector3 directIntentX;
+    Vector3 directIntentY;
+    float speed;
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
 
-    Vector3 velocity;
-    bool isGrounded;
-
+    public bool isGrounded;
+    public bool isSprinting;
+    public bool isCrouching;
     // Start is called before the first frame update
     void Start()
     {
-        
+        Cursor.lockState = CursorLockMode.Locked;
+        speed = walkSpeed;
     }
 
     // Update is called once per frame
     void Update()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        Camera();
+        Move();
+        Jump();
+    }
 
-        if(isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;
-        }
+    void FixedUpdate()
+    {
+        ExtraGrav();
+    }
 
-        if(isGrounded)
-        {
-            x = Input.GetAxis("Horizontal");
-            z = Input.GetAxis("Vertical");
-        }
+    void Camera()
+    {
+        //Get cam and body rotation
+        xBodyRot += Input.GetAxis("Mouse X") * camRotSpeed;
+        camRotY += Input.GetAxis("Mouse Y") * camRotSpeed;
 
-        if(Input.GetKey(KeyCode.LeftShift))
+        //stop camera from rotate 360 on y axis
+        camRotY = Mathf.Clamp(camRotY, -75f, 75f);
+
+        //Create quaternions for rotations
+        Quaternion camTargetRot = Quaternion.Euler(-camRotY, 0, 0);
+        Quaternion playerTargetRot = Quaternion.Euler(0, xBodyRot, 0);
+
+        //doing rotations
+        transform.rotation = Quaternion.Lerp(transform.rotation, playerTargetRot, Time.deltaTime * rotSmoothSpeed);
+
+        camera.localRotation = Quaternion.Lerp(camera.localRotation, camTargetRot, Time.deltaTime * rotSmoothSpeed);
+    }
+
+    void Move()
+    {
+        //make player direction match camera
+        directIntentX = camera.right;
+        directIntentX.y = 0;
+        directIntentX.Normalize();
+
+        directIntentY = camera.forward;
+        directIntentY.y = 0;
+        directIntentY.Normalize();
+
+
+        //decide speed and if sprinting/crouching
+        if(Input.GetKeyDown(KeyCode.LeftShift))
         {
-            speed = 19f;
+            speed = runSpeed;
             isSprinting = true;
         }
-        
         if(Input.GetKeyUp(KeyCode.LeftShift))
         {
-            speed = 12f;
+            speed = walkSpeed;
             isSprinting = false;
         }
-
-        if(Input.GetKey(KeyCode.LeftControl))
+        if(Input.GetKeyDown(KeyCode.LeftControl))
         {
-            controller.height = 1.5f;
+            body.transform.localScale = new Vector3(1f,.625f,1f);
             isCrouching = true;
-            speed = 8f;
+            speed = crouchSpeed;
         }
-        
         if(Input.GetKeyUp(KeyCode.LeftControl))
         {
-            controller.height = 3f;
+            body.transform.localScale = new Vector3(1f, 1.25f,1f);
             isCrouching = false;
-            speed = 12f;
+            speed = walkSpeed;
         }
 
-        Vector3 move = transform.right * x + transform.forward * z;
-
-        controller.Move(move * speed * Time.deltaTime);
-
-
-        if(Input.GetButtonDown("Jump") && isGrounded)
+        //change velocity
+        if(isGrounded)
         {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * grav);
+            playerBody.velocity = directIntentY * Input.GetAxis("Vertical") * speed + directIntentX * Input.GetAxis("Horizontal") * speed + Vector3.up * playerBody.velocity.y;
+            playerBody.velocity = Vector3.ClampMagnitude(playerBody.velocity, maxspeed);
         }
+    }
 
-        velocity.y += grav * Time.deltaTime;
+    void ExtraGrav()
+    {
+        playerBody.AddForce(Vector3.down * xtraGrav, ForceMode.Acceleration);
+    }
 
-        if(velocity.y < -200f)
+    void Jump()
+    {
+        if(isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
-            velocity.y = -200f;
+            playerBody.AddForce(new Vector3(0, jumpForce, 0), ForceMode.VelocityChange);
         }
-
-        controller.Move(velocity * Time.deltaTime);
     }
 }
