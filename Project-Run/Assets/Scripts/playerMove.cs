@@ -22,7 +22,7 @@ public class playerMove : MonoBehaviour
     float camRotY;
     Vector3 directIntentX;
     Vector3 directIntentY;
-    float speed;
+    public float speed;
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;
@@ -67,7 +67,6 @@ public class playerMove : MonoBehaviour
 
         //doing rotations
         transform.rotation = Quaternion.Lerp(transform.rotation, playerTargetRot, Time.deltaTime * rotSmoothSpeed);
-
         camera.localRotation = Quaternion.Lerp(camera.localRotation, camTargetRot, Time.deltaTime * rotSmoothSpeed);
     }
 
