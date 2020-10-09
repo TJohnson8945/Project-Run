@@ -147,6 +147,7 @@ public class playerMove : MonoBehaviour
         }
         else if (!isWallRunning)
         {
+            xtraGrav = 45f;
             playerBody.AddForce(Vector3.down * xtraGrav, ForceMode.Acceleration);
         }
     }
