@@ -440,7 +440,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   wallrunForce: 3000
-  maxWallrunTime: 10
+  maxWallrunTime: 60
   maxWallSpeed: 25
   isWallRight: 0
   isWallLeft: 0

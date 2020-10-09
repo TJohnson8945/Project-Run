@@ -83,9 +83,17 @@ public class playerMove : MonoBehaviour
         //While Wallrunning
         //Tilts camera in .5 second
         if (Math.Abs(wallRunCameraTilt) < maxWallRunCameraTilt && isWallRunning && isWallRight)
+        {
             wallRunCameraTilt += Time.deltaTime * maxWallRunCameraTilt * 2;
+            camera.transform.localRotation = Quaternion.Euler(0, 0, wallRunCameraTilt);
+        }
         if (Math.Abs(wallRunCameraTilt) < maxWallRunCameraTilt && isWallRunning && isWallLeft)
+        {
             wallRunCameraTilt -= Time.deltaTime * maxWallRunCameraTilt * 2;
+            camera.transform.localRotation = Quaternion.Euler(0, 0, wallRunCameraTilt);
+
+        }
+
 
         //Tilts camera back again
         if (wallRunCameraTilt > 0 && !isWallRight && !isWallLeft)
