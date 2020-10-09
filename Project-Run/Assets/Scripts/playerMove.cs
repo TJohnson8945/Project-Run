@@ -140,6 +140,7 @@ public class playerMove : MonoBehaviour
 
     void ExtraGrav()
     {
+        //decides extra gravity basedon if youre wall running
         if (isWallRunning)
         {
             xtraGrav = 10f;
@@ -155,6 +156,7 @@ public class playerMove : MonoBehaviour
 
     void Jump()
     {
+        //applies jump force
         if(isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
             playerBody.AddForce(new Vector3(0, jumpForce, 0), ForceMode.VelocityChange);
