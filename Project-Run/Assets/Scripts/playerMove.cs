@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,6 +32,14 @@ public class playerMove : MonoBehaviour
     public bool isGrounded;
     public bool isSprinting;
     public bool isCrouching;
+
+    public LayerMask whatIsWall;
+    public float wallrunForce, maxWallrunTime, maxWallSpeed;
+    public bool isWallRight, isWallLeft;
+    public bool isWallRunning;
+    public float maxWallRunCameraTilt, wallRunCameraTilt;
+    public Transform orientation;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,6 +54,8 @@ public class playerMove : MonoBehaviour
         Camera();
         Move();
         Jump();
+        CheckForWall();
+        WallRunInput();
     }
 
     void FixedUpdate()
@@ -68,6 +79,19 @@ public class playerMove : MonoBehaviour
         //doing rotations
         transform.rotation = Quaternion.Lerp(transform.rotation, playerTargetRot, Time.deltaTime * rotSmoothSpeed);
         camera.localRotation = Quaternion.Lerp(camera.localRotation, camTargetRot, Time.deltaTime * rotSmoothSpeed);
+
+        //While Wallrunning
+        //Tilts camera in .5 second
+        if (Math.Abs(wallRunCameraTilt) < maxWallRunCameraTilt && isWallRunning && isWallRight)
+            wallRunCameraTilt += Time.deltaTime * maxWallRunCameraTilt * 2;
+        if (Math.Abs(wallRunCameraTilt) < maxWallRunCameraTilt && isWallRunning && isWallLeft)
+            wallRunCameraTilt -= Time.deltaTime * maxWallRunCameraTilt * 2;
+
+        //Tilts camera back again
+        if (wallRunCameraTilt > 0 && !isWallRight && !isWallLeft)
+            wallRunCameraTilt -= Time.deltaTime * maxWallRunCameraTilt * 2;
+        if (wallRunCameraTilt < 0 && !isWallRight && !isWallLeft)
+            wallRunCameraTilt += Time.deltaTime * maxWallRunCameraTilt * 2;
     }
 
     void Move()
@@ -116,8 +140,17 @@ public class playerMove : MonoBehaviour
 
     void ExtraGrav()
     {
-        playerBody.AddForce(Vector3.down * xtraGrav, ForceMode.Acceleration);
+        if (isWallRunning)
+        {
+            xtraGrav = 10f;
+            playerBody.AddForce(Vector3.down * xtraGrav, ForceMode.Acceleration);
+        }
+        else if (!isWallRunning)
+        {
+            playerBody.AddForce(Vector3.down * xtraGrav, ForceMode.Acceleration);
+        }
     }
+    
 
     void Jump()
     {
@@ -126,4 +159,45 @@ public class playerMove : MonoBehaviour
             playerBody.AddForce(new Vector3(0, jumpForce, 0), ForceMode.VelocityChange);
         }
     }
+
+    //Wallrunning
+   
+
+    private void WallRunInput() //make sure to call in void Update
+    {
+        //Wallrun
+        if (Input.GetKey(KeyCode.D) && isWallRight) StartWallrun();
+        if (Input.GetKey(KeyCode.A) && isWallLeft) StartWallrun();
+    }
+    private void StartWallrun()
+    {
+        playerBody.useGravity = false;
+        isWallRunning = true;
+
+        if (playerBody.velocity.magnitude <= maxWallSpeed)
+        {
+            playerBody.AddForce(orientation.forward * wallrunForce * Time.deltaTime);
+
+            //Make sure char sticks to wall
+            if (isWallRight)
+                playerBody.AddForce(orientation.right * wallrunForce / 5 * Time.deltaTime);
+            else
+                playerBody.AddForce(-orientation.right * wallrunForce / 5 * Time.deltaTime);
+        }
+    }
+    private void StopWallRun()
+    {
+        isWallRunning = false;
+        playerBody.useGravity = true;
+    }
+    private void CheckForWall() //make sure to call in void Update
+    {
+        isWallRight = Physics.Raycast(transform.position, orientation.right, 1f, whatIsWall);
+        isWallLeft = Physics.Raycast(transform.position, -orientation.right, 1f, whatIsWall);
+
+        //leave wall run
+        if (!isWallLeft && !isWallRight) StopWallRun();
+
+    }
+      
 }
