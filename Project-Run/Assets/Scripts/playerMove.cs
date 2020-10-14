@@ -180,6 +180,7 @@ public class playerMove : MonoBehaviour
         if (Input.GetKey(KeyCode.D) && isWallRight) StartWallrun();
         if (Input.GetKey(KeyCode.A) && isWallLeft) StartWallrun();
     }
+
     private void StartWallrun()
     {
         playerBody.useGravity = false;
@@ -196,11 +197,13 @@ public class playerMove : MonoBehaviour
                 playerBody.AddForce(-orientation.right * wallrunForce / 5 * Time.deltaTime);
         }
     }
+
     private void StopWallRun()
     {
         isWallRunning = false;
         playerBody.useGravity = true;
     }
+    
     private void CheckForWall() //make sure to call in void Update
     {
         isWallRight = Physics.Raycast(transform.position, orientation.right, 1f, whatIsWall);
