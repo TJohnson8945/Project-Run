@@ -32,6 +32,7 @@ public class playerMove : MonoBehaviour
     public bool isGrounded;
     public bool isSprinting;
     public bool isCrouching;
+    public bool extraJump;
 
     public LayerMask whatIsWall;
     public float wallrunForce, maxWallrunTime, maxWallSpeed;
@@ -56,6 +57,7 @@ public class playerMove : MonoBehaviour
         Jump();
         CheckForWall();
         WallRunInput();
+        ExtraJump();
     }
 
     void FixedUpdate()
@@ -185,6 +187,7 @@ public class playerMove : MonoBehaviour
     {
         playerBody.useGravity = false;
         isWallRunning = true;
+        extraJump = true;
 
         if (playerBody.velocity.magnitude <= maxWallSpeed)
         {
@@ -202,6 +205,7 @@ public class playerMove : MonoBehaviour
     {
         isWallRunning = false;
         playerBody.useGravity = true;
+        extraJump = false;
     }
     
     private void CheckForWall() //make sure to call in void Update
@@ -212,6 +216,18 @@ public class playerMove : MonoBehaviour
         //leave wall run
         if (!isWallLeft && !isWallRight) StopWallRun();
 
+    }
+
+    private void ExtraJump()
+    {
+        if (extraJump && isWallRight && Input.GetKeyDown(KeyCode.Space))
+        {
+            playerBody.AddForce(new Vector3(0, jumpForce / 2, -jumpForce / 2), ForceMode.VelocityChange);
+        }
+        if (extraJump && isWallLeft && Input.GetKeyDown(KeyCode.Space))
+        {
+            playerBody.AddForce(new Vector3(0, jumpForce / 2, -jumpForce / 2), ForceMode.VelocityChange);
+        }
     }
       
 }
