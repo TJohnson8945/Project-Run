@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playerMove : MonoBehaviour
 {
@@ -36,8 +37,8 @@ public class playerMove : MonoBehaviour
 
     public LayerMask whatIsWall;
     public float wallrunForce, maxWallrunTime, maxWallSpeed;
-    public bool isWallRight, isWallLeft;
-    public bool isWallRunning;
+    public bool isWallRight, isWallLeft, isWallForward;
+    public bool isWallRunning, isWallClimbing;
     public float maxWallRunCameraTilt, wallRunCameraTilt;
     public Transform orientation;
 
@@ -58,6 +59,16 @@ public class playerMove : MonoBehaviour
         CheckForWall();
         WallRunInput();
         ExtraJump();
+
+        if (isWallForward && Input.GetKey(KeyCode.W))
+        {
+            WallClimb();
+        }
+            
+        if (Input.GetKey(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 
     void FixedUpdate()
@@ -212,6 +223,7 @@ public class playerMove : MonoBehaviour
     {
         isWallRight = Physics.Raycast(transform.position, orientation.right, 1f, whatIsWall);
         isWallLeft = Physics.Raycast(transform.position, -orientation.right, 1f, whatIsWall);
+        isWallForward = Physics.Raycast(transform.position, orientation.forward, 1f, whatIsWall);
 
         //leave wall run
         if (!isWallLeft && !isWallRight) StopWallRun();
@@ -220,14 +232,32 @@ public class playerMove : MonoBehaviour
 
     private void ExtraJump()
     {
-        if (extraJump && isWallRight && Input.GetKeyDown(KeyCode.Space))
+        /*
+        if (extraJump && isWallRunning && Input.GetKeyDown(KeyCode.Space))
         {
             playerBody.AddForce(new Vector3(0, jumpForce / 2, -jumpForce / 2), ForceMode.VelocityChange);
         }
-        if (extraJump && isWallLeft && Input.GetKeyDown(KeyCode.Space))
+        */
+
+        if (isWallRight &&  Input.GetKey(KeyCode.A))
         {
-            playerBody.AddForce(new Vector3(0, jumpForce / 2, -jumpForce / 2), ForceMode.VelocityChange);
+            playerBody.AddForce(-orientation.right * jumpForce * 3.2f);
+            playerBody.AddForce(orientation.up * jumpForce);
+            isWallRunning = false;
+        }
+        if (isWallLeft &&  Input.GetKey(KeyCode.D))
+        {
+            playerBody.AddForce(orientation.right * jumpForce * 3.2f);
+            playerBody.AddForce(orientation.up * jumpForce);
+            isWallRunning = false;
         }
     }
-      
+
+    private void WallClimb()
+    { 
+        playerBody.AddForce(orientation.up * jumpForce / 2f);
+        playerBody.AddForce(orientation.forward * wallrunForce / 5 * Time.deltaTime);
+        playerBody.useGravity = false;
+        
+    }
 }
