@@ -14,13 +14,18 @@ public class Enemy : MonoBehaviour
     private float manualVely;
     private bool isJumping = false;
     public GameObject currentPlat;
-
+    public float speed = 5;
+    
+    private float distToTarget;
+    
     private void jump(){
         agent.enabled = false;
         isJumping = true;
-        manualVely = nextTarget.transform.position.y-this.transform.position.y;
-        manualVely *= 1.2f;
-        manualVelx = .4f;
+        manualVely = (nextTarget.transform.position.y - transform.position.y + 4)/3;
+        Debug.Log(manualVely);
+        Vector3 distToTargetV = nextTarget.transform.position - transform.position;
+        distToTargetV.y = 0;
+        distToTarget = distToTargetV.magnitude;
     }
 
     // Start is called before the first frame update
@@ -41,13 +46,13 @@ public class Enemy : MonoBehaviour
             jump();
         }
         if(isJumping){
-            transform.position += transform.forward * manualVelx;
-            transform.position += new Vector3(0, manualVely, 0);
-            this.transform.LookAt(nextTarget.transform.position);
-            Vector3.MoveTowards(transform.position, nextTarget.transform.position, 3);
+            //this.transform.LookAt(nextTarget.transform.position);
+            Vector3 dirOfTar = nextTarget.transform.position - transform.position;
+            dirOfTar.y = 0;
+            dirOfTar = dirOfTar.normalized;
+            Debug.Log(dirOfTar);
+            transform.position = new Vector3(transform.position.x + dirOfTar.x * speed, transform.position.y + manualVely*Time.deltaTime, transform.position.z + dirOfTar.z * speed);
             if((transform.position - nextTarget.transform.position).magnitude < 1){
-                transform.position = nextTarget.transform.position;
-                //agent.enabled = true;
                 try{
                     transform.position = nextTarget.transform.position;
                     currentPlat = currentPlat.GetComponent<Link>().plat;
@@ -61,7 +66,7 @@ public class Enemy : MonoBehaviour
                     Debug.Log("Tried, no next target");
                 }
             }
-            manualVely -= .07f;
+            manualVely -= 0.1f;
         }
 
     }

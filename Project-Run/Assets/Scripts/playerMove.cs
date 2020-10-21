@@ -41,6 +41,8 @@ public class playerMove : MonoBehaviour
     public bool isWallRunning, isWallClimbing;
     public float maxWallRunCameraTilt, wallRunCameraTilt;
     public Transform orientation;
+    public float xAxis = 0;
+    public float yAxis = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -59,6 +61,8 @@ public class playerMove : MonoBehaviour
         CheckForWall();
         WallRunInput();
         ExtraJump();
+        xAxis = Input.GetAxis("move 1");
+        yAxis = Input.GetAxis("move 2");
 
         if (isWallForward && Input.GetKey(KeyCode.W))
         {
@@ -79,6 +83,8 @@ public class playerMove : MonoBehaviour
     void Camera()
     {
         //Get cam and body rotation
+        xBodyRot += Input.GetAxis("turn 1") * camRotSpeed;
+        camRotY += Input.GetAxis("turn 2") * camRotSpeed;
         xBodyRot += Input.GetAxis("Mouse X") * camRotSpeed;
         camRotY += Input.GetAxis("Mouse Y") * camRotSpeed;
 
@@ -109,9 +115,9 @@ public class playerMove : MonoBehaviour
 
 
         //Tilts camera back again
-        if (wallRunCameraTilt > 0 && !isWallRight && !isWallLeft)
+        if (wallRunCameraTilt > 0 && !isWallRight && !isWallLeft && !isWallRunning)
             wallRunCameraTilt -= Time.deltaTime * maxWallRunCameraTilt * 2;
-        if (wallRunCameraTilt < 0 && !isWallRight && !isWallLeft)
+        if (wallRunCameraTilt < 0 && !isWallRight && !isWallLeft && !isWallRunning)
             wallRunCameraTilt += Time.deltaTime * maxWallRunCameraTilt * 2;
     }
 
@@ -128,15 +134,40 @@ public class playerMove : MonoBehaviour
 
 
         //decide speed and if sprinting/crouching
+        if(Input.GetButtonDown("joystick button 2")){
+            if(isCrouching){
+                speed = walkSpeed;
+                body.transform.localScale = new Vector3(1f, 1.25f,1f);
+            }else{
+                speed = crouchSpeed;
+                body.transform.localScale = new Vector3(1f,.625f,1f);
+            }
+            isCrouching = !isCrouching;
+        }
+        if(Input.GetButtonDown("joystick button 10")){
+            if(isSprinting){
+                speed = walkSpeed;
+                isSprinting = false;
+            }
+            else if(isCrouching){ // where we slide
+                isCrouching = false;
+                speed = walkSpeed;
+                isSprinting = false;
+                body.transform.localScale = new Vector3(1f, 1.25f, 1f);
+            }
+            else{
+                isSprinting = true;
+                speed = runSpeed;
+            }
+        }
         if(Input.GetKeyDown(KeyCode.LeftShift))
         {
-            speed = runSpeed;
-            isSprinting = true;
-        }
-        if(Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            speed = walkSpeed;
-            isSprinting = false;
+            if(isSprinting){
+                speed = walkSpeed;
+            }else{
+                speed = runSpeed;
+                isSprinting = true;
+            }
         }
         if(Input.GetKeyDown(KeyCode.LeftControl))
         {
@@ -153,7 +184,11 @@ public class playerMove : MonoBehaviour
 
         //change velocity
         if(isGrounded)
-        {
+        {   
+            if(Input.GetAxis("Vertical") < .1 && Input.GetAxis("turn 1") < .1){
+                isSprinting = false;
+                speed = walkSpeed;
+            }
             playerBody.velocity = directIntentY * Input.GetAxis("Vertical") * speed + directIntentX * Input.GetAxis("Horizontal") * speed + Vector3.up * playerBody.velocity.y;
             playerBody.velocity = Vector3.ClampMagnitude(playerBody.velocity, maxspeed);
         }
@@ -178,9 +213,12 @@ public class playerMove : MonoBehaviour
     void Jump()
     {
         //applies jump force
-        if(isGrounded && Input.GetKeyDown(KeyCode.Space))
+        if(isGrounded )
         {
-            playerBody.AddForce(new Vector3(0, jumpForce, 0), ForceMode.VelocityChange);
+            if((Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("joystick button 1"))){
+                playerBody.AddForce(new Vector3(0, jumpForce, 0), ForceMode.VelocityChange);
+                isGrounded = false;
+            }
         }
     }
 
@@ -190,8 +228,9 @@ public class playerMove : MonoBehaviour
     private void WallRunInput() //make sure to call in void Update
     {
         //Wallrun
-        if (Input.GetKey(KeyCode.D) && isWallRight) StartWallrun();
-        if (Input.GetKey(KeyCode.A) && isWallLeft) StartWallrun();
+        if ((Input.GetKey(KeyCode.D) || Input.GetAxis("move 1") > .5) && isWallRight){ StartWallrun();Debug.Log("Works");}
+        
+        if ((Input.GetKey(KeyCode.A) || Input.GetAxis("move 1") < -.5) && isWallLeft) StartWallrun();
     }
 
     private void StartWallrun()
@@ -221,8 +260,8 @@ public class playerMove : MonoBehaviour
     
     private void CheckForWall() //make sure to call in void Update
     {
-        isWallRight = Physics.Raycast(transform.position, orientation.right, 1f, whatIsWall);
-        isWallLeft = Physics.Raycast(transform.position, -orientation.right, 1f, whatIsWall);
+        isWallRight = Physics.Raycast(transform.position, orientation.right, 1.5f, whatIsWall);
+        isWallLeft = Physics.Raycast(transform.position, -orientation.right, 1.5f, whatIsWall);
         isWallForward = Physics.Raycast(transform.position, orientation.forward, 1f, whatIsWall);
 
         //leave wall run
@@ -239,13 +278,13 @@ public class playerMove : MonoBehaviour
         }
         */
 
-        if (isWallRight &&  Input.GetKey(KeyCode.A))
+        if (isWallRight &&  (Input.GetKey(KeyCode.A) || Input.GetAxis("move 1") > .2))
         {
             playerBody.AddForce(-orientation.right * jumpForce * 3.2f);
             playerBody.AddForce(orientation.up * jumpForce);
             isWallRunning = false;
         }
-        if (isWallLeft &&  Input.GetKey(KeyCode.D))
+        if (isWallLeft &&  (Input.GetKey(KeyCode.D) || Input.GetAxis("move 2") > .2))
         {
             playerBody.AddForce(orientation.right * jumpForce * 3.2f);
             playerBody.AddForce(orientation.up * jumpForce);
