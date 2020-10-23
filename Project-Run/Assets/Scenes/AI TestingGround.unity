@@ -1045,7 +1045,7 @@ MonoBehaviour:
   camera: {fileID: 930765743}
   playerBody: {fileID: 495355082}
   body: {fileID: 495355080}
-  camRotSpeed: 5
+  camRotSpeed: 10
   rotSmoothSpeed: 10
   walkSpeed: 12
   crouchSpeed: 7
@@ -1053,6 +1053,8 @@ MonoBehaviour:
   maxspeed: 50
   jumpForce: 25
   xtraGrav: 45
+  xBodyRot: 0
+  camRotY: 0
   speed: 0
   groundCheck: {fileID: 1116213868}
   groundDistance: 0.4
@@ -2283,7 +2285,6 @@ GameObject:
   - component: {fileID: 1333296342}
   - component: {fileID: 1333296341}
   - component: {fileID: 1333296340}
-  - component: {fileID: 1333296344}
   m_Layer: 0
   m_Name: EnemyShooter
   m_TagString: Untagged
@@ -2366,23 +2367,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1333296344
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1333296339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a80a94333ccca49adbd85928770f9ebc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 495355080}
-  bulletPrefab: {fileID: 0}
-  shooter: {fileID: 1929499381}
-  maxTurningSpeed: 3
-  tba: 5
 --- !u!1 &1532685662
 GameObject:
   m_ObjectHideFlags: 0

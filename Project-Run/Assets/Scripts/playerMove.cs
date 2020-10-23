@@ -92,12 +92,12 @@ public class playerMove : MonoBehaviour
         camRotY = Mathf.Clamp(camRotY, -75f, 75f);
 
         //Create quaternions for rotations
-        Quaternion camTargetRot = Quaternion.Euler(-camRotY, 0, 0);
+        Quaternion camTargetRot = Quaternion.Euler(-camRotY, 0, 0); 
         Quaternion playerTargetRot = Quaternion.Euler(0, xBodyRot, 0);
 
         //doing rotations
-        transform.rotation = Quaternion.Lerp(transform.rotation, playerTargetRot, Time.deltaTime * rotSmoothSpeed);
-        camera.localRotation = Quaternion.Lerp(camera.localRotation, camTargetRot, Time.deltaTime * rotSmoothSpeed);
+        transform.rotation = Quaternion.Lerp(transform.rotation, playerTargetRot, Time.deltaTime * rotSmoothSpeed); 
+        camera.localRotation = Quaternion.Lerp(camera.localRotation, camTargetRot, Time.deltaTime * rotSmoothSpeed); 
 
         //While Wallrunning
         //Tilts camera in .5 second
@@ -228,7 +228,7 @@ public class playerMove : MonoBehaviour
     private void WallRunInput() //make sure to call in void Update
     {
         //Wallrun
-        if ((Input.GetKey(KeyCode.D) || Input.GetAxis("move 1") > .5) && isWallRight){ StartWallrun();Debug.Log("Works");}
+        if ((Input.GetKey(KeyCode.D) || Input.GetAxis("move 1") > .5) && isWallRight) StartWallrun();
         
         if ((Input.GetKey(KeyCode.A) || Input.GetAxis("move 1") < -.5) && isWallLeft) StartWallrun();
     }
@@ -278,13 +278,13 @@ public class playerMove : MonoBehaviour
         }
         */
 
-        if (isWallRight &&  (Input.GetKey(KeyCode.A) || Input.GetAxis("move 1") > .2))
+        if (isWallRight &&  (Input.GetKey(KeyCode.A) || Input.GetAxis("move 1") < -.2))
         {
             playerBody.AddForce(-orientation.right * jumpForce * 3.2f);
             playerBody.AddForce(orientation.up * jumpForce);
             isWallRunning = false;
         }
-        if (isWallLeft &&  (Input.GetKey(KeyCode.D) || Input.GetAxis("move 2") > .2))
+        if (isWallLeft &&  (Input.GetKey(KeyCode.D) || Input.GetAxis("move 1") > .2))
         {
             playerBody.AddForce(orientation.right * jumpForce * 3.2f);
             playerBody.AddForce(orientation.up * jumpForce);
