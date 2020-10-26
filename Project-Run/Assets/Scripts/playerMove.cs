@@ -43,6 +43,8 @@ public class playerMove : MonoBehaviour
     public Transform orientation;
     public float xAxis = 0;
     public float yAxis = 0;
+    public float camX = 0;
+    public float camY = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -63,6 +65,8 @@ public class playerMove : MonoBehaviour
         ExtraJump();
         xAxis = Input.GetAxis("move 1");
         yAxis = Input.GetAxis("move 2");
+        camX = Input.GetAxis("turn 1");
+        camY = Input.GetAxis("turn 2");
 
         if (isWallForward && Input.GetKey(KeyCode.W))
         {
@@ -82,6 +86,7 @@ public class playerMove : MonoBehaviour
 
     void Camera()
     {
+        Debug.Log()
         //Get cam and body rotation
         xBodyRot += Input.GetAxis("turn 1") * camRotSpeed;
         camRotY += Input.GetAxis("turn 2") * camRotSpeed;
