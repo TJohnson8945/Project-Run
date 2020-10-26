@@ -9,8 +9,8 @@ public class playerMove : MonoBehaviour
     public Transform camera;
     public Rigidbody playerBody;
     public GameObject body;
-
-    public float camRotSpeed = 5f;
+    [Range(1.0f, 10.0f)]
+    public float camRotSpeed;
     public float rotSmoothSpeed = 10f;
 
     public float walkSpeed = 12f;
