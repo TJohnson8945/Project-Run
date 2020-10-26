@@ -86,7 +86,7 @@ public class playerMove : MonoBehaviour
 
     void Camera()
     {
-        Debug.Log()
+        
         //Get cam and body rotation
         xBodyRot += Input.GetAxis("turn 1") * camRotSpeed;
         camRotY += Input.GetAxis("turn 2") * camRotSpeed;
