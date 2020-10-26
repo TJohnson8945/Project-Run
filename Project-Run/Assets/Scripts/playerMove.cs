@@ -45,10 +45,12 @@ public class playerMove : MonoBehaviour
     public float yAxis = 0;
     public float camX = 0;
     public float camY = 0;
+    private string os;
 
     // Start is called before the first frame update
     void Start()
     {
+        os = SystemInfo.operatingSystem;
         Cursor.lockState = CursorLockMode.Locked;
         speed = walkSpeed;
     }
@@ -89,7 +91,12 @@ public class playerMove : MonoBehaviour
         
         //Get cam and body rotation
         xBodyRot += Input.GetAxis("turn 1") * camRotSpeed;
-        camRotY += Input.GetAxis("turn 2") * camRotSpeed;
+        if(os.Contains("Mac")){
+            camRotY += Input.GetAxis("turn 2 mac") * camRotSpeed;
+        }
+        else{
+            camRotY += Input.GetAxis("turn 2") * camRotSpeed;
+        }
         xBodyRot += Input.GetAxis("Mouse X") * camRotSpeed;
         camRotY += Input.GetAxis("Mouse Y") * camRotSpeed;
 
