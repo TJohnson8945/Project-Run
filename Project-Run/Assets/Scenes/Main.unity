@@ -3801,8 +3801,8 @@ MonoBehaviour:
   camera: {fileID: 1695953416}
   playerBody: {fileID: 545139243}
   body: {fileID: 545139241}
-  camRotSpeed: 5
-  rotSmoothSpeed: 5
+  camRotSpeed: 2.2
+  rotSmoothSpeed: 10
   walkSpeed: 12
   crouchSpeed: 7
   runSpeed: 18

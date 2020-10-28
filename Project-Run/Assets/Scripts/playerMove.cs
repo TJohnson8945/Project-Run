@@ -11,6 +11,8 @@ public class playerMove : MonoBehaviour
     public GameObject body;
     [Range(1.0f, 10.0f)]
     public float camRotSpeed;
+    [Range(1.0f, 10.0f)]
+    public float deadZone;
     public float rotSmoothSpeed = 10f;
 
     public float walkSpeed = 12f;
