@@ -130,9 +130,9 @@ public class playerMove : MonoBehaviour
 
         //Tilts camera back again
         if (wallRunCameraTilt > 0 && !isWallRight && !isWallLeft && !isWallRunning)
-            wallRunCameraTilt -= Time.deltaTime * maxWallRunCameraTilt * 2;
+            wallRunCameraTilt -= Time.deltaTime * maxWallRunCameraTilt * 1.5f;
         if (wallRunCameraTilt < 0 && !isWallRight && !isWallLeft && !isWallRunning)
-            wallRunCameraTilt += Time.deltaTime * maxWallRunCameraTilt * 2;
+            wallRunCameraTilt += Time.deltaTime * maxWallRunCameraTilt * 1.5f;
     }
 
     void Move()
@@ -294,13 +294,13 @@ public class playerMove : MonoBehaviour
 
         if (isWallRight &&  (Input.GetKey(KeyCode.A) || Input.GetAxis("move 1") < -.2))
         {
-            playerBody.AddForce(-orientation.right * jumpForce * 3.2f);
+            playerBody.AddForce(-orientation.right * jumpForce/2 * 3.2f);
             playerBody.AddForce(orientation.up * jumpForce);
             isWallRunning = false;
         }
         if (isWallLeft &&  (Input.GetKey(KeyCode.D) || Input.GetAxis("move 1") > .2))
         {
-            playerBody.AddForce(orientation.right * jumpForce * 3.2f);
+            playerBody.AddForce(orientation.right * jumpForce/2 * 3.2f);
             playerBody.AddForce(orientation.up * jumpForce);
             isWallRunning = false;
         }
