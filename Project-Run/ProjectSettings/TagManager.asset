@@ -8,6 +8,8 @@ TagManager:
   - platform
   - Jump
   - Wall
+  - Button
+  - Vanish
   layers:
   - Default
   - TransparentFX

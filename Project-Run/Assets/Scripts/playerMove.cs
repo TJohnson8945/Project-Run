@@ -11,7 +11,7 @@ public class playerMove : MonoBehaviour
     public GameObject body;
     [Range(1.0f, 10.0f)]
     public float camRotSpeed;
-    [Range(1.0f, 10.0f)]
+    [Range(0f, 1.0f)]
     public float deadZone;
     public float rotSmoothSpeed = 10f;
 
@@ -90,18 +90,22 @@ public class playerMove : MonoBehaviour
 
     void Camera()
     {
-        
-        //Get cam and body rotation
-        xBodyRot += Input.GetAxis("turn 1") * camRotSpeed;
-        if(os.Contains("Mac")){
-            camRotY += Input.GetAxis("turn 2 mac") * camRotSpeed;
+        if (Input.GetAxis("move 2") > deadZone || Input.GetAxis("move 2") < -deadZone)
+        {
+            //Get cam and body rotation
+            xBodyRot += Input.GetAxis("turn 1") * camRotSpeed;
+            if (os.Contains("Mac"))
+            {
+                camRotY += Input.GetAxis("turn 2 mac") * camRotSpeed;
+            }
+            else
+            {
+                camRotY += Input.GetAxis("turn 2") * camRotSpeed;
+            }
         }
-        else{
-            camRotY += Input.GetAxis("turn 2") * camRotSpeed;
-        }
+
         xBodyRot += Input.GetAxis("Mouse X") * camRotSpeed;
         camRotY += Input.GetAxis("Mouse Y") * camRotSpeed;
-
         //stop camera from rotate 360 on y axis
         camRotY = Mathf.Clamp(camRotY, -75f, 75f);
 
@@ -227,7 +231,7 @@ public class playerMove : MonoBehaviour
     void Jump()
     {
         //applies jump force
-        if(isGrounded )
+        if(isGrounded)
         {
             if((Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("joystick button 1"))){
                 playerBody.AddForce(new Vector3(0, jumpForce, 0), ForceMode.VelocityChange);
@@ -242,9 +246,9 @@ public class playerMove : MonoBehaviour
     private void WallRunInput() //make sure to call in void Update
     {
         //Wallrun
-        if ((Input.GetKey(KeyCode.D) || Input.GetAxis("move 1") > .5) && isWallRight) StartWallrun();
+        if ((Input.GetKey(KeyCode.D) || Input.GetButton("Fire2") && isWallRight)) StartWallrun();
         
-        if ((Input.GetKey(KeyCode.A) || Input.GetAxis("move 1") < -.5) && isWallLeft) StartWallrun();
+        if ((Input.GetKey(KeyCode.A) || Input.GetButton("Fire1") && isWallLeft)) StartWallrun();
     }
 
     private void StartWallrun()
@@ -270,12 +274,13 @@ public class playerMove : MonoBehaviour
         isWallRunning = false;
         playerBody.useGravity = true;
         extraJump = false;
+        
     }
     
     private void CheckForWall() //make sure to call in void Update
     {
-        isWallRight = Physics.Raycast(transform.position, orientation.right, 1.5f, whatIsWall);
-        isWallLeft = Physics.Raycast(transform.position, -orientation.right, 1.5f, whatIsWall);
+        isWallRight = Physics.Raycast(transform.position, orientation.right, 1.2f, whatIsWall);
+        isWallLeft = Physics.Raycast(transform.position, -orientation.right, 1.2f, whatIsWall);
         isWallForward = Physics.Raycast(transform.position, orientation.forward, 1f, whatIsWall);
 
         //leave wall run
@@ -285,26 +290,21 @@ public class playerMove : MonoBehaviour
 
     private void ExtraJump()
     {
-        /*
-        if (extraJump && isWallRunning && Input.GetKeyDown(KeyCode.Space))
-        {
-            playerBody.AddForce(new Vector3(0, jumpForce / 2, -jumpForce / 2), ForceMode.VelocityChange);
-        }
-        */
-
-        if (isWallRight &&  (Input.GetKey(KeyCode.A) || Input.GetAxis("move 1") < -.2))
+        
+        if (isWallRight &&  (Input.GetKey(KeyCode.A) || Input.GetButton("Fire1")))
         {
             playerBody.AddForce(-orientation.right * jumpForce/2 * 3.2f);
-            playerBody.AddForce(orientation.up * jumpForce);
+            playerBody.AddForce(orientation.up * jumpForce * 1.2f);
             isWallRunning = false;
         }
-        if (isWallLeft &&  (Input.GetKey(KeyCode.D) || Input.GetAxis("move 1") > .2))
+        if (isWallLeft &&  (Input.GetKey(KeyCode.D) || Input.GetButton("Fire2")))
         {
             playerBody.AddForce(orientation.right * jumpForce/2 * 3.2f);
-            playerBody.AddForce(orientation.up * jumpForce);
+            playerBody.AddForce(orientation.up * jumpForce * 1.2f);
             isWallRunning = false;
         }
     }
+    
 
     private void WallClimb()
     { 
