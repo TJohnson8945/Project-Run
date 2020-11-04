@@ -142,19 +142,17 @@ public class playerMove : MonoBehaviour
             wallRunCameraTilt += Time.deltaTime * maxWallRunCameraTilt * 1.5f;
     }
 
+
     void Move()
     {
         //Sound Effect for walking
-        if (xAxis == 0 && yAxis == 0)
+        if (!(xAxis != 0 || yAxis != 0 || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W)))
         {
-            if (isGrounded)
-            {
-                PlayWalking();
-            }
-        }
-
-        if (!isSprinting)
-        {
+            stopWalking();
+            stopRunning();
+        }else if(isGrounded && !isSprinting){
+            PlayWalking();
+        }else if(isGrounded && isSprinting){
             PlayRunning();
         }
         
@@ -342,10 +340,22 @@ public class playerMove : MonoBehaviour
     //SFX
     public void PlayWalking()
     {
-        Walking.Play();
+        if(!Walking.isPlaying){
+            Walking.Play();
+        }
     }
     public void PlayRunning()
     {
-        Running.Play();
+        if(!Running.isPlaying){
+            Running.Play();
+        }
     }
+    public void stopRunning(){
+        Running.Stop();
+    }
+    public void stopWalking(){
+        Walking.Stop();
+    }
+
+
 }
