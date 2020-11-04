@@ -79,7 +79,7 @@ public class playerMove : MonoBehaviour
         {
             WallClimb();
         }
-            
+
         if (Input.GetKey(KeyCode.R))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -93,8 +93,8 @@ public class playerMove : MonoBehaviour
 
     void Camera()
     {
-        
-        
+
+
         //Get cam and body rotation
         xBodyRot += Input.GetAxis("turn 1") * camRotSpeed;
         if (os.Contains("Mac"))
@@ -105,7 +105,7 @@ public class playerMove : MonoBehaviour
         {
             camRotY += Input.GetAxis("turn 2") * camRotSpeed;
         }
-        
+
 
         xBodyRot += Input.GetAxis("Mouse X") * camRotSpeed;
         camRotY += Input.GetAxis("Mouse Y") * camRotSpeed;
@@ -113,12 +113,12 @@ public class playerMove : MonoBehaviour
         camRotY = Mathf.Clamp(camRotY, -75f, 75f);
 
         //Create quaternions for rotations
-        Quaternion camTargetRot = Quaternion.Euler(-camRotY, 0, 0); 
+        Quaternion camTargetRot = Quaternion.Euler(-camRotY, 0, 0);
         Quaternion playerTargetRot = Quaternion.Euler(0, xBodyRot, 0);
 
         //doing rotations
-        transform.rotation = Quaternion.Lerp(transform.rotation, playerTargetRot, Time.deltaTime * rotSmoothSpeed); 
-        camera.localRotation = Quaternion.Lerp(camera.localRotation, camTargetRot, Time.deltaTime * rotSmoothSpeed); 
+        transform.rotation = Quaternion.Lerp(transform.rotation, playerTargetRot, Time.deltaTime * rotSmoothSpeed);
+        camera.localRotation = Quaternion.Lerp(camera.localRotation, camTargetRot, Time.deltaTime * rotSmoothSpeed);
 
         //While Wallrunning
         //Tilts camera in .5 second
@@ -145,24 +145,33 @@ public class playerMove : MonoBehaviour
 
     void Move()
     {
-        //Sound Effect for walking
+        //Sound effect
         if (!(xAxis != 0 || yAxis != 0 || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W)))
         {
-<<<<<<< Updated upstream
             stopWalking();
             stopRunning();
-        }else if(isGrounded && !isSprinting){
-            PlayWalking();
-        }else if(isGrounded && isSprinting){
-            PlayRunning();
-=======
-            if (isGrounded)
-            {
-                PlayRunning();
-            }
->>>>>>> Stashed changes
         }
-        
+        else if (isGrounded && !isSprinting)
+        {
+            if (Running.isPlaying)
+            {
+                stopRunning();
+            }
+            PlayWalking();
+        }
+        else if (isGrounded && isSprinting)
+        {
+            PlayRunning();
+            if (Walking.isPlaying)
+            {
+                stopWalking();
+            }
+        }
+        else
+        {
+            stopWalking();
+            stopRunning();
+        }
 
         //make player direction match camera
         directIntentX = camera.right;
@@ -175,28 +184,36 @@ public class playerMove : MonoBehaviour
 
 
         //decide speed and if sprinting/crouching
-        if (Input.GetButtonDown("joystick button 2")){
-            if(isCrouching){
+        if (Input.GetButtonDown("joystick button 2"))
+        {
+            if (isCrouching)
+            {
                 speed = walkSpeed;
-                body.transform.localScale = new Vector3(1f, 1.25f,1f);
-            }else{
+                body.transform.localScale = new Vector3(1f, 1.25f, 1f);
+            }
+            else
+            {
                 speed = crouchSpeed;
-                body.transform.localScale = new Vector3(1f,.625f,1f);
+                body.transform.localScale = new Vector3(1f, .625f, 1f);
             }
             isCrouching = !isCrouching;
         }
-        if(Input.GetButtonDown("joystick button 10")){
-            if(isSprinting){
+        if (Input.GetButtonDown("joystick button 10"))
+        {
+            if (isSprinting)
+            {
                 speed = walkSpeed;
                 isSprinting = false;
             }
-            else if(isCrouching){ // where we slide
+            else if (isCrouching)
+            { // where we slide
                 isCrouching = false;
                 speed = walkSpeed;
                 isSprinting = false;
                 body.transform.localScale = new Vector3(1f, 1.25f, 1f);
             }
-            else{
+            else
+            {
                 isSprinting = true;
                 speed = runSpeed;
 
@@ -204,36 +221,40 @@ public class playerMove : MonoBehaviour
         }
 
         //Enable Sprint
-        if(Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            if(isSprinting){
+            if (isSprinting)
+            {
                 speed = walkSpeed;
-            }else{
+            }
+            else
+            {
                 speed = runSpeed;
                 isSprinting = true;
             }
         }
 
         //Enable Crouch
-        if(Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            body.transform.localScale = new Vector3(1f,.625f,1f);
+            body.transform.localScale = new Vector3(1f, .625f, 1f);
             isCrouching = true;
             speed = crouchSpeed;
         }
 
         //Disable Crouch
-        if(Input.GetKeyUp(KeyCode.LeftControl))
+        if (Input.GetKeyUp(KeyCode.LeftControl))
         {
-            body.transform.localScale = new Vector3(1f, 1.25f,1f);
+            body.transform.localScale = new Vector3(1f, 1.25f, 1f);
             isCrouching = false;
             speed = walkSpeed;
         }
 
         //change velocity
-        if(isGrounded)
-        {   
-            if(Input.GetAxis("Vertical") < .1 && Input.GetAxis("turn 1") < .1){
+        if (isGrounded)
+        {
+            if (Input.GetAxis("Vertical") < .1 && Input.GetAxis("turn 1") < .1)
+            {
                 isSprinting = false;
                 speed = walkSpeed;
             }
@@ -256,14 +277,15 @@ public class playerMove : MonoBehaviour
             playerBody.AddForce(Vector3.down * xtraGrav, ForceMode.Acceleration);
         }
     }
-    
+
 
     void Jump()
     {
         //applies jump force
-        if(isGrounded)
+        if (isGrounded)
         {
-            if((Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("joystick button 1"))){
+            if ((Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("joystick button 1")))
+            {
                 playerBody.AddForce(new Vector3(0, jumpForce, 0), ForceMode.VelocityChange);
                 isGrounded = false;
             }
@@ -271,13 +293,13 @@ public class playerMove : MonoBehaviour
     }
 
     //Wallrunning
-   
+
 
     private void WallRunInput() //make sure to call in void Update
     {
         //Wallrun
         if ((Input.GetKey(KeyCode.D) || Input.GetButton("Fire2") && isWallRight)) StartWallrun();
-        
+
         if ((Input.GetKey(KeyCode.A) || Input.GetButton("Fire1") && isWallLeft)) StartWallrun();
     }
 
@@ -304,9 +326,9 @@ public class playerMove : MonoBehaviour
         isWallRunning = false;
         playerBody.useGravity = true;
         extraJump = false;
-        
+
     }
-    
+
     private void CheckForWall() //make sure to call in void Update
     {
         isWallRight = Physics.Raycast(transform.position, orientation.right, 1.2f, whatIsWall);
@@ -320,47 +342,51 @@ public class playerMove : MonoBehaviour
 
     private void ExtraJump()
     {
-        
-        if (isWallRight &&  (Input.GetKey(KeyCode.A) || Input.GetButton("Fire1")))
+
+        if (isWallRight && (Input.GetKey(KeyCode.A) || Input.GetButton("Fire1")))
         {
-            playerBody.AddForce(-orientation.right * jumpForce/2 * 3.2f);
+            playerBody.AddForce(-orientation.right * jumpForce / 2 * 3.2f);
             playerBody.AddForce(orientation.up * jumpForce * 1.2f);
             isWallRunning = false;
         }
-        if (isWallLeft &&  (Input.GetKey(KeyCode.D) || Input.GetButton("Fire2")))
+        if (isWallLeft && (Input.GetKey(KeyCode.D) || Input.GetButton("Fire2")))
         {
-            playerBody.AddForce(orientation.right * jumpForce/2 * 3.2f);
+            playerBody.AddForce(orientation.right * jumpForce / 2 * 3.2f);
             playerBody.AddForce(orientation.up * jumpForce * 1.2f);
             isWallRunning = false;
         }
     }
-    
+
 
     private void WallClimb()
-    { 
+    {
         playerBody.AddForce(orientation.up * jumpForce / 2f);
         playerBody.AddForce(orientation.forward * wallrunForce / 5 * Time.deltaTime);
         playerBody.useGravity = false;
-        
+
     }
 
     //SFX
     public void PlayWalking()
     {
-        if(!Walking.isPlaying){
+        if (!Walking.isPlaying)
+        {
             Walking.Play();
         }
     }
     public void PlayRunning()
     {
-        if(!Running.isPlaying){
+        if (!Running.isPlaying)
+        {
             Running.Play();
         }
     }
-    public void stopRunning(){
+    public void stopRunning()
+    {
         Running.Stop();
     }
-    public void stopWalking(){
+    public void stopWalking()
+    {
         Walking.Stop();
     }
 

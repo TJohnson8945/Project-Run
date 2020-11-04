@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 [RequireComponent(typeof(AudioSource))]
 public class audioController : MonoBehaviour
 {
@@ -21,3 +21,4 @@ public class audioController : MonoBehaviour
         
     }
 }
+*/
