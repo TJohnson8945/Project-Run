@@ -1,9 +1,13 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Interaction : MonoBehaviour
 {
+
+    public AudioSource audioSource;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +28,7 @@ public class Interaction : MonoBehaviour
             GameObject[] vanish = GameObject.FindGameObjectsWithTag("Vanish");
             foreach (GameObject hide in vanish)
             GameObject.Destroy(hide);
+            audioSource.Play();
         }
     }
 }

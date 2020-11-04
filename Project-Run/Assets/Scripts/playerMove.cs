@@ -49,6 +49,9 @@ public class playerMove : MonoBehaviour
     public float camY = 0;
     private string os;
 
+    public AudioSource Walking;
+    public AudioSource Running;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -90,19 +93,19 @@ public class playerMove : MonoBehaviour
 
     void Camera()
     {
-        if (Input.GetAxis("move 2") > deadZone || Input.GetAxis("move 2") < -deadZone)
+        
+        
+        //Get cam and body rotation
+        xBodyRot += Input.GetAxis("turn 1") * camRotSpeed;
+        if (os.Contains("Mac"))
         {
-            //Get cam and body rotation
-            xBodyRot += Input.GetAxis("turn 1") * camRotSpeed;
-            if (os.Contains("Mac"))
-            {
-                camRotY += Input.GetAxis("turn 2 mac") * camRotSpeed;
-            }
-            else
-            {
-                camRotY += Input.GetAxis("turn 2") * camRotSpeed;
-            }
+            camRotY += Input.GetAxis("turn 2 mac") * camRotSpeed;
         }
+        else
+        {
+            camRotY += Input.GetAxis("turn 2") * camRotSpeed;
+        }
+        
 
         xBodyRot += Input.GetAxis("Mouse X") * camRotSpeed;
         camRotY += Input.GetAxis("Mouse Y") * camRotSpeed;
@@ -141,6 +144,21 @@ public class playerMove : MonoBehaviour
 
     void Move()
     {
+        //Sound Effect for walking
+        if (xAxis == 0 && yAxis == 0)
+        {
+            if (isGrounded)
+            {
+                PlayWalking();
+            }
+        }
+
+        if (!isSprinting)
+        {
+            PlayRunning();
+        }
+        
+
         //make player direction match camera
         directIntentX = camera.right;
         directIntentX.y = 0;
@@ -152,7 +170,7 @@ public class playerMove : MonoBehaviour
 
 
         //decide speed and if sprinting/crouching
-        if(Input.GetButtonDown("joystick button 2")){
+        if (Input.GetButtonDown("joystick button 2")){
             if(isCrouching){
                 speed = walkSpeed;
                 body.transform.localScale = new Vector3(1f, 1.25f,1f);
@@ -176,8 +194,11 @@ public class playerMove : MonoBehaviour
             else{
                 isSprinting = true;
                 speed = runSpeed;
+
             }
         }
+
+        //Enable Sprint
         if(Input.GetKeyDown(KeyCode.LeftShift))
         {
             if(isSprinting){
@@ -187,12 +208,16 @@ public class playerMove : MonoBehaviour
                 isSprinting = true;
             }
         }
+
+        //Enable Crouch
         if(Input.GetKeyDown(KeyCode.LeftControl))
         {
             body.transform.localScale = new Vector3(1f,.625f,1f);
             isCrouching = true;
             speed = crouchSpeed;
         }
+
+        //Disable Crouch
         if(Input.GetKeyUp(KeyCode.LeftControl))
         {
             body.transform.localScale = new Vector3(1f, 1.25f,1f);
@@ -312,5 +337,15 @@ public class playerMove : MonoBehaviour
         playerBody.AddForce(orientation.forward * wallrunForce / 5 * Time.deltaTime);
         playerBody.useGravity = false;
         
+    }
+
+    //SFX
+    public void PlayWalking()
+    {
+        Walking.Play();
+    }
+    public void PlayRunning()
+    {
+        Running.Play();
     }
 }
