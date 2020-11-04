@@ -148,12 +148,19 @@ public class playerMove : MonoBehaviour
         //Sound Effect for walking
         if (!(xAxis != 0 || yAxis != 0 || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W)))
         {
+<<<<<<< Updated upstream
             stopWalking();
             stopRunning();
         }else if(isGrounded && !isSprinting){
             PlayWalking();
         }else if(isGrounded && isSprinting){
             PlayRunning();
+=======
+            if (isGrounded)
+            {
+                PlayRunning();
+            }
+>>>>>>> Stashed changes
         }
         
 
