@@ -22,7 +22,7 @@ public class playerMove : MonoBehaviour
     public float jumpForce = 20f;
     public float xtraGrav = 45;
 
-    float xBodyRot;
+    float xBodyRot = 90;
     float camRotY;
     Vector3 directIntentX;
     Vector3 directIntentY;
@@ -96,17 +96,24 @@ public class playerMove : MonoBehaviour
 
 
         //Get cam and body rotation
-        xBodyRot += Input.GetAxis("turn 1") * camRotSpeed;
+        if (Input.GetAxis("turn 1") > .2 || Input.GetAxis("turn 1") < -.2)
+        {
+            xBodyRot += Input.GetAxis("turn 1") * camRotSpeed;
+        }
         if (os.Contains("Mac"))
         {
-            camRotY += Input.GetAxis("turn 2 mac") * camRotSpeed;
+            if (Input.GetAxis("turn 2 mac") > .2 || Input.GetAxis("turn 2 mac") < -.2)
+            {
+                camRotY += Input.GetAxis("turn 2 mac") * camRotSpeed;
+            }
         }
         else
         {
-            camRotY += Input.GetAxis("turn 2") * camRotSpeed;
+            if (Input.GetAxis("turn 2") > .2 || Input.GetAxis("turn 2") < -.2)
+            {
+                camRotY += Input.GetAxis("turn 2") * camRotSpeed;
+            }
         }
-
-
         xBodyRot += Input.GetAxis("Mouse X") * camRotSpeed;
         camRotY += Input.GetAxis("Mouse Y") * camRotSpeed;
         //stop camera from rotate 360 on y axis
@@ -145,13 +152,13 @@ public class playerMove : MonoBehaviour
 
     void Move()
     {
-        //Sound effect
+        //Sound Effect for walking
         if (!(xAxis != 0 || yAxis != 0 || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W)))
         {
             stopWalking();
             stopRunning();
         }
-        else if (isGrounded && !isSprinting)
+        else if ((isGrounded || isWallRunning) && !isSprinting)
         {
             if (Running.isPlaying)
             {
@@ -159,7 +166,7 @@ public class playerMove : MonoBehaviour
             }
             PlayWalking();
         }
-        else if (isGrounded && isSprinting)
+        else if ((isGrounded || isWallRunning) && isSprinting)
         {
             PlayRunning();
             if (Walking.isPlaying)
@@ -188,6 +195,7 @@ public class playerMove : MonoBehaviour
         {
             if (isCrouching)
             {
+                isSprinting = false;
                 speed = walkSpeed;
                 body.transform.localScale = new Vector3(1f, 1.25f, 1f);
             }
@@ -229,6 +237,14 @@ public class playerMove : MonoBehaviour
             }
             else
             {
+                speed = runSpeed;
+                isSprinting = true;
+            }
+
+            if (isCrouching)
+            { 
+                body.transform.localScale = new Vector3(1f, 1.25f, 1f);
+                isCrouching = false;
                 speed = runSpeed;
                 isSprinting = true;
             }
@@ -298,9 +314,9 @@ public class playerMove : MonoBehaviour
     private void WallRunInput() //make sure to call in void Update
     {
         //Wallrun
-        if ((Input.GetKey(KeyCode.D) || Input.GetButton("Fire2") && isWallRight)) StartWallrun();
+        if ((Input.GetKey(KeyCode.D) || Input.GetButton("Fire2")) && isWallRight) StartWallrun();
 
-        if ((Input.GetKey(KeyCode.A) || Input.GetButton("Fire1") && isWallLeft)) StartWallrun();
+        if ((Input.GetKey(KeyCode.A) || Input.GetButton("Fire1")) && isWallLeft) StartWallrun();
     }
 
     private void StartWallrun()
@@ -311,7 +327,7 @@ public class playerMove : MonoBehaviour
 
         if (playerBody.velocity.magnitude <= maxWallSpeed)
         {
-            playerBody.AddForce(orientation.forward * wallrunForce * Time.deltaTime);
+            playerBody.AddForce(orientation.forward * wallrunForce * 2 * Time.deltaTime);
 
             //Make sure char sticks to wall
             if (isWallRight)
@@ -347,12 +363,14 @@ public class playerMove : MonoBehaviour
         {
             playerBody.AddForce(-orientation.right * jumpForce / 2 * 3.2f);
             playerBody.AddForce(orientation.up * jumpForce * 1.2f);
+            playerBody.AddForce(orientation.forward * wallrunForce * Time.deltaTime);
             isWallRunning = false;
         }
         if (isWallLeft && (Input.GetKey(KeyCode.D) || Input.GetButton("Fire2")))
         {
             playerBody.AddForce(orientation.right * jumpForce / 2 * 3.2f);
             playerBody.AddForce(orientation.up * jumpForce * 1.2f);
+            playerBody.AddForce(orientation.forward * wallrunForce * Time.deltaTime);
             isWallRunning = false;
         }
     }
