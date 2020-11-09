@@ -51,6 +51,8 @@ public class playerMove : MonoBehaviour
 
     public AudioSource Walking;
     public AudioSource Running;
+    public AudioSource Breathing;
+    public AudioSource Ambience;
 
     // Start is called before the first frame update
     void Start()
@@ -58,6 +60,7 @@ public class playerMove : MonoBehaviour
         os = SystemInfo.operatingSystem;
         Cursor.lockState = CursorLockMode.Locked;
         speed = walkSpeed;
+        PlayAmbience();
     }
 
     // Update is called once per frame
@@ -157,6 +160,7 @@ public class playerMove : MonoBehaviour
         {
             stopWalking();
             stopRunning();
+            stopBreathing();
         }
         else if ((isGrounded || isWallRunning) && !isSprinting)
         {
@@ -169,6 +173,8 @@ public class playerMove : MonoBehaviour
         else if ((isGrounded || isWallRunning) && isSprinting)
         {
             PlayRunning();
+            PlayBreathing();
+
             if (Walking.isPlaying)
             {
                 stopWalking();
@@ -178,6 +184,7 @@ public class playerMove : MonoBehaviour
         {
             stopWalking();
             stopRunning();
+            stopBreathing();
         }
 
         //make player direction match camera
@@ -399,6 +406,13 @@ public class playerMove : MonoBehaviour
             Running.Play();
         }
     }
+    public void PlayBreathing()
+    {
+        if(!Breathing.isPlaying)
+        {
+            Breathing.Play();
+        }
+    }
     public void stopRunning()
     {
         Running.Stop();
@@ -406,6 +420,15 @@ public class playerMove : MonoBehaviour
     public void stopWalking()
     {
         Walking.Stop();
+    }
+    public void stopBreathing()
+    {
+        Breathing.Stop();
+    }
+
+    public void PlayAmbience()
+    {
+        Ambience.Play();
     }
 
 
