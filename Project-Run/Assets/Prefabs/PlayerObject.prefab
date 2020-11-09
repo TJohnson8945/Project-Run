@@ -11,10 +11,9 @@ GameObject:
   - component: {fileID: 6372819360493608200}
   - component: {fileID: 6372819360493608197}
   - component: {fileID: 6372819360493608198}
-  - component: {fileID: 6372819360493608199}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -80,19 +79,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &6372819360493608199
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6372819360493608201}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6372819360980388062
 GameObject:
   m_ObjectHideFlags: 0
@@ -104,7 +90,7 @@ GameObject:
   - component: {fileID: 6372819360980388061}
   m_Layer: 0
   m_Name: Head
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -252,7 +238,7 @@ GameObject:
   - component: {fileID: 6372819362026923621}
   m_Layer: 0
   m_Name: PlayerObject
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -368,13 +354,13 @@ MonoBehaviour:
   playerBody: {fileID: 6372819362026923620}
   body: {fileID: 6372819362026923622}
   camRotSpeed: 1
-  deadZone: 10
+  deadZone: 0.073
   rotSmoothSpeed: 10
   walkSpeed: 12
   crouchSpeed: 7
   runSpeed: 18
   maxspeed: 50
-  jumpForce: 25
+  jumpForce: 17
   xtraGrav: 45
   speed: 0
   groundCheck: {fileID: 6372819361668023305}
@@ -404,3 +390,7 @@ MonoBehaviour:
   yAxis: 0
   camX: 0
   camY: 0
+  Walking: {fileID: 0}
+  Running: {fileID: 0}
+  Breathing: {fileID: 0}
+  Ambience: {fileID: 0}

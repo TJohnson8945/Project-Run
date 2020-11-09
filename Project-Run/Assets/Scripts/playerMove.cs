@@ -388,7 +388,6 @@ public class playerMove : MonoBehaviour
         playerBody.AddForce(orientation.up * jumpForce / 2f);
         playerBody.AddForce(orientation.forward * wallrunForce / 5 * Time.deltaTime);
         playerBody.useGravity = false;
-
     }
 
     //SFX
