@@ -22,7 +22,7 @@ TagManager:
   - ground
   - isWall
   - climbableWall
-  - 
+  - PostProcessing
   - 
   - 
   - 

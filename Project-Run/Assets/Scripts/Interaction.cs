@@ -7,6 +7,7 @@ public class Interaction : MonoBehaviour
 {
 
     public AudioSource audioSource;
+    public AudioSource wallFall;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +30,7 @@ public class Interaction : MonoBehaviour
             foreach (GameObject hide in vanish)
             GameObject.Destroy(hide);
             audioSource.Play();
+            wallFall.Play();
         }
     }
 }
