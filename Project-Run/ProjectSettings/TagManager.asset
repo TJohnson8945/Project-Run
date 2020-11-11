@@ -10,7 +10,6 @@ TagManager:
   - Wall
   - Button
   - Vanish
-  - checkpoint
   layers:
   - Default
   - TransparentFX
