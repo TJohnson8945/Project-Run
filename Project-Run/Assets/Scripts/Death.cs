@@ -14,7 +14,7 @@ public class Death : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void OnCollisionEnter(Collision other)
@@ -24,7 +24,7 @@ public class Death : MonoBehaviour
             Debug.Log("We ran into it");
             GameObject[] Player = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject hide in Player)
-            GameObject.Destroy(hide);
+                GameObject.Destroy(hide);
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
