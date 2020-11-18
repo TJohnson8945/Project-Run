@@ -170,7 +170,7 @@ public class playerMove : MonoBehaviour
             }
             PlayWalking();
         }
-        else if ((isGrounded || isWallRunning) && isSprinting)
+        else if (((isGrounded || isWallRunning) && isSprinting ) || (isWallRunning))
         {
             PlayRunning();
             PlayBreathing();

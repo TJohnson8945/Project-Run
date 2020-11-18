@@ -3527,6 +3527,24 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &42661384 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6372819362026923622, guid: c2c7d958b08783043b7352a8da1294e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 1113215472}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &42661391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42661384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed2e63f3925154f8d8a5c7636341682b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &56808655
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -90230,6 +90248,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2034979551731814348, guid: da21793fab409da47a268e9aca7be68f,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.59
+      objectReference: {fileID: 0}
     - target: {fileID: 2034979551731814349, guid: da21793fab409da47a268e9aca7be68f,
         type: 3}
       propertyPath: m_Name
